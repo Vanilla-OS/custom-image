@@ -1,0 +1,57 @@
+base: ghcr.io/vanilla-os/desktop:main
+name: Custom Vanilla Desktop
+id: vanilla-custom
+labels:
+  maintainer: self-maintained
+args:
+  DEBIAN_FRONTEND: noninteractive
+
+modules:
+- name: init-setup
+  type: shell
+  commands:
+  - lpkg --unlock
+  - apt-get update
+
+# Put your custom actions behind this comment
+
+- name: example-packages
+  type: apt
+  source:
+    packages:
+    - vim
+
+- name: example-commands
+  type: shell
+  commands:
+  - echo Example output
+
+# Put your custom actions before this comment
+
+- name: cleanup
+  type: shell
+  commands:
+  - apt-get autoremove -y
+  - apt-get clean
+  - lpkg --lock
+
+- name: fsguard
+  type: fsguard
+  CustomFsGuard: false
+  FsGuardLocation: "/usr/sbin/FsGuard"
+  GenerateKey: true
+  FilelistPaths: ["/usr/bin"]
+  modules:
+    - name: remove-prev-fsguard
+      type: shell
+      commands:
+        - rm -rf /FsGuard 
+        - rm -f ./minisign.pub ./minisign.key 
+        - chmod +x /usr/sbin/init
+
+- name: cleanup2
+  type: shell
+  commands:
+    - rm -rf /tmp/*
+    - rm -rf /var/tmp/*
+    - rm -rf /sources
