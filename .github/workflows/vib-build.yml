@@ -88,10 +88,15 @@ jobs:
         recipe: 'recipe.yml'
         plugins: 'Vanilla-OS/vib-fsguard:v1.2-1'
 
+    - name: generate image name
+      run: |
+        REPO_OWNER_LOWERCASE="$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')"
+        echo "IMAGE_TAG=ghcr.io/$REPO_OWNER_LOWERCASE/${{ env.CUSTOM_IMAGE_NAME }}:main">> "$GITHUB_ENV"
+
     - name: Build the Docker image
-      run: docker image build -f Containerfile --tag ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:main .
+      run: docker image build -f Containerfile --tag "${{ env.IMAGE_TAG }}" .
 
     - name: Push To GHCR
       run: |
         docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }}
-        docker image push "ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:main"
+        docker image push "${{ env.IMAGE_TAG }}"
