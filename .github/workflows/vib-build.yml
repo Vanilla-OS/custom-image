@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 env:
-  BASE_IMAGE: desktop
   CUSTOM_IMAGE_NAME: custom
 
 jobs:
@@ -24,6 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: sudo apt-get install jq
+
+      - name: Read base image name from recipe
+        run: |
+          BASE_IMAGE="$(cat recipe.yml | grep "ghcr.io/vanilla-os" | awk -F ' ' '{print $2}')"
+          echo The base image is $BASE_IMAGE
+          echo "BASE_IMAGE_TYPE=$(echo $BASE_IMAGE | awk -F '/' '{print $3}' | awk -F ':' '{print $1}')" >> "$GITHUB_ENV"
 
       - name: get last successful run
         if: ${{ github.ref_type == 'branch' }}
@@ -46,7 +51,7 @@ jobs:
         run: |
           touch digest.txt
           mv digest.txt last_digest.txt
-          curl https://differ.vanillaos.org/images/${{ env.BASE_IMAGE }} > vanilla-image-info
+          curl https://differ.vanillaos.org/images/${{ env.BASE_IMAGE_TYPE }} > vanilla-image-info
           jq -r '.image.releases[-1].digest' vanilla-image-info > digest.txt
           echo Old digest is: $(cat last_digest.txt)
           echo New digest is: $(cat digest.txt)
