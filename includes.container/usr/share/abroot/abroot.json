@@ -1,0 +1,27 @@
+{
+    "autoRepair": true,
+    "maxParallelDownloads": 2,
+
+    "registry": "ghcr.io",
+    "registryService": "registry.ghcr.io",
+    "registryAPIVersion": "v2",
+    "name": "taukakao/custom",
+    "tag": "main",
+
+    "iPkgMngPre": "lpkg --unlock",
+    "iPkgMngPost": "lpkg --lock",
+    "iPkgMngAdd": "apt-get install -y",
+    "iPkgMngRm": "apt-get remove -y --autoremove",
+    "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
+    "iPkgMngStatus": 2,
+
+    "differURL": "https://differ.vanillaos.org",
+
+    "partLabelVar": "vos-var",
+    "partLabelA": "vos-a",
+    "partLabelB": "vos-b",
+    "partLabelBoot": "vos-boot",
+    "partLabelEfi": "vos-efi",
+
+    "libPathStates": "/var/lib/abroot/states"
+}
