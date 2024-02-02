@@ -30,6 +30,7 @@ modules:
   type: includes
   includes:
     - modules/50-install-debs
+    - modules/80-set-image-abroot-config
 
 # Put your custom actions before this comment
 

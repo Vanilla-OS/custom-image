@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       has_updates: ${{ steps.set_output.outputs.has_updates }}
+      base_image_type: ${{ steps.read_base_recipe.outputs.base_image_type }}
     permissions:
       contents: write
     steps:
@@ -25,10 +26,13 @@ jobs:
         run: sudo apt-get install jq
 
       - name: Read base image name from recipe
+        id: read_base_recipe
         run: |
           BASE_IMAGE="$(cat recipe.yml | grep "ghcr.io/vanilla-os" | awk -F ' ' '{print $2}')"
           echo The base image is $BASE_IMAGE
-          echo "BASE_IMAGE_TYPE=$(echo $BASE_IMAGE | awk -F '/' '{print $3}' | awk -F ':' '{print $1}')" >> "$GITHUB_ENV"
+          BASE_IMAGE_TYPE="$(echo $BASE_IMAGE | awk -F '/' '{print $3}' | awk -F ':' '{print $1}')"
+          echo "base_image_type=$BASE_IMAGE_TYPE" >> "$GITHUB_OUTPUT"
+          echo "BASE_IMAGE_TYPE=$BASE_IMAGE_TYPE" >> "$GITHUB_ENV"
 
       - name: get last successful run
         if: ${{ github.ref_type == 'branch' }}
@@ -96,7 +100,13 @@ jobs:
     - name: generate image name
       run: |
         REPO_OWNER_LOWERCASE="$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')"
+        echo "REPO_OWNER_LOWERCASE=$REPO_OWNER_LOWERCASE">> "$GITHUB_ENV"
         echo "IMAGE_TAG=ghcr.io/$REPO_OWNER_LOWERCASE/${{ env.CUSTOM_IMAGE_NAME }}:main">> "$GITHUB_ENV"
+
+    - name: Set image info
+      run: |
+        echo -n "vanilla-os/${{ needs.check_update.outputs.base_image_type }}" > ./includes.container/image-info/base-image-name
+        echo -n "${{ env.REPO_OWNER_LOWERCASE }}/${{ env.CUSTOM_IMAGE_NAME }}" > ./includes.container/image-info/image-name
 
     - name: Build the Docker image
       run: docker image build -f Containerfile --tag "${{ env.IMAGE_TAG }}" .

@@ -1,0 +1,11 @@
+name: add-image-name
+type: shell
+commands:
+  - BASE_IMAGE="$(cat /image-info/base-image-name)"
+  - IMAGE_NAME="$(cat /image-info/image-name)"
+  - echo base image "$BASE_IMAGE"
+  - echo custom image name "$IMAGE_NAME"
+  - BASE_IMAGE_ESCAPED="$(echo $BASE_IMAGE | sed 's/\//\\\//g')"
+  - IMAGE_NAME_ESCAPED="$(echo $IMAGE_NAME | sed 's/\//\\\//g')"
+  - sed -i "s/$BASE_IMAGE_ESCAPED/$IMAGE_NAME_ESCAPED/g" /usr/share/abroot/abroot.json
+  - rm -rf /image-info
