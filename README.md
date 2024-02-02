@@ -13,6 +13,15 @@ It is suggested to checkout the [Vib repository's README](https://github.com/Van
 - Open the `recipe.yml` file and replace the image name and ID with your image name and ID in line 2 and 3.
 - Now, perform your additions and modifications to the recipe as per your requirements.
 - Optionally, add your own modules to the `modules` directory and add them in the package-modules includes in `recipe.yml`.
+- You can check the Actions tab in Github to see the build progress of your image.
+
+## Use your custom image
+
+If your image got successfully built, you can then point abroot to your custom image to use it.
+
+- Edit `/etc/abroot/abroot.json` with `host-shell pkexec nano /etc/abroot/abroot.json`.
+- Change the "name" entry from something like vanilla-os/desktop to your-github-name/your-image-name (for example taukakao/custom).
+- Run "abroot upgrade" to switch to your custom image.
 
 ## Explore
 
