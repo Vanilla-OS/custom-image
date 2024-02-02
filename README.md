@@ -12,6 +12,7 @@ It is suggested to checkout the [Vib repository's README](https://github.com/Van
 - Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 11.
 - Open the `recipe.yml` file and replace the image name and ID with your image name and ID in line 2 and 3.
 - Now, perform your additions and modifications to the recipe as per your requirements.
+- If you just want to install .deb files, you can just put them in `includes.container/deb-pkgs`
 - Optionally, add your own modules to the `modules` directory and add them in the package-modules includes in `recipe.yml`.
 - You can check the Actions tab in Github to see the build progress of your image.
 
