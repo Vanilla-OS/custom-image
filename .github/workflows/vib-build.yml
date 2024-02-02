@@ -97,7 +97,7 @@ jobs:
         recipe: 'recipe.yml'
         plugins: 'Vanilla-OS/vib-fsguard:v1.2-1'
 
-    - name: generate image name
+    - name: Generate image name
       run: |
         REPO_OWNER_LOWERCASE="$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')"
         echo "REPO_OWNER_LOWERCASE=$REPO_OWNER_LOWERCASE">> "$GITHUB_ENV"
