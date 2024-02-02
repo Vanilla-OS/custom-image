@@ -4,9 +4,19 @@ This template repository is a starting point for creating custom [Vib images](ht
 
 It is suggested to checkout the [Vib repository's README](https://github.com/Vanilla-OS/Vib?tab=readme-ov-file#recipe-format) to know more about the recipe format, structure of modules and the supported fields.
 
+## Getting Started
+
+- First, click on the "Use this template" button in top right corner, then from the drop down menu select "Create a new repository". This would create a new repository with the same files and directories as this repository.
+- Go to Settings -> Actions -> General and ensure "Allow all actions and reusable workflows" are enabled.
+- Now, clone the repository to your local machine and let's start customizing your image. You can also use the github online editor if you prefer.
+- Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 11.
+- Open the `recipe.yml` file and replace the image name and ID with your image name and ID in line 2 and 3.
+- Now, perform your additions and modifications to the recipe as per your requirements.
+- Optionally, add your own modules to the `modules` directory and add them in the package-modules includes in `recipe.yml`.
+
 ## Explore
 
-Now, that you are aware of the basic syntax, let's explore the files and directories present in this repository:
+Now, that you are aware of the basics, let's explore the files and directories present in this repository:
 
 - `.github/workflows/vib-build.yml`: This file contains the GitHub Actions workflow to check for updates to base image and build the Vib image.
   - It uses the `vib` action to build the recipe and upload it as an artifact. The generated artifact is then built using Docker and pushed to GHCR.
@@ -17,13 +27,3 @@ Now, that you are aware of the basic syntax, let's explore the files and directo
 - `includes.container`: The files included in this directory are added by default to your image to the specified location. (It also contains ABRoot's configuration file)
 - `modules`: This directory contains the modules that are used to customize the image. You can add your own modules to this directory.
 - `recipe.yml`: This file contains the recipe for the image. It specfies the base image, modules and other fields to be present in the custom image.
-
-## Getting Started
-
-- First, click on the "Use this template" button in top right corner, then from the drop down menu select "Create a new repository". This would create a new repository with the same files and directories as this repository.
-- Go to Settings -> Actions -> General and ensure "Allow all actions and reusable workflows" are enabled.
-- Now, clone the repository to your local machine and let's start customizing your image. You can also use the github online editor if you prefer.
-- Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 11.
-- Open the `recipe.yml` file and replace the image name and ID with your image name and ID in line 2 and 3.
-- Now, perform your additions and modifications to the recipe as per your requirements.
-- Optionally, add your own modules to the `modules` directory and add them in the package-modules includes in `recipe.yml`.
