@@ -1,6 +1,6 @@
 # Custom Vib Image
 
-This template repository is a starting point for creating custom [Vib images](https://github.com/Vanilla-OS/Vib) on top of our [desktop image](https://github.com/Vanilla-OS/desktop-image). It contains a basic recipe and an example module to get you started.
+This template repository is a starting point for creating custom [Vib images](https://github.com/Vanilla-OS/Vib) on top of [official vanilla images](https://images.vanillaos.org) like [desktop image](https://github.com/Vanilla-OS/desktop-image). It contains a basic recipe and an example module to get you started.
 
 It is suggested to checkout the [Vib repository's README](https://github.com/Vanilla-OS/Vib?tab=readme-ov-file#recipe-format) to know more about the recipe format, structure of modules and the supported fields.
 
@@ -21,10 +21,9 @@ Now, that you are aware of the basic syntax, let's explore the files and directo
 ## Getting Started
 
 - First, click on the "Use this template" button in top right corner, then from the drop down menu select "Create a new repository". This would create a new repository with the same files and directories as this repository.
-- Go to Settings -> Actions -> General and ensure "Allow all actions and reusable workflows" are enabled and the workflow permissions are set to both "Read and write permissions".
-- Now, clone the repository to your local machine and let's start customizing your image.
-- Open the `vib-build.yml` workflow file and replace the custom image name with your own image name in line 11.
-- Open the ABRoot JSON configuration file under `includes.container/usr/share/abroot` directory and replace the name in the format `username/image-name` (i.e. `vanillaos/custom-vib-image`).
+- Go to Settings -> Actions -> General and ensure "Allow all actions and reusable workflows" are enabled.
+- Now, clone the repository to your local machine and let's start customizing your image. You can also use the github online editor if you prefer.
+- Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 11.
 - Open the `recipe.yml` file and replace the image name and ID with your image name and ID in line 2 and 3.
 - Now, perform your additions and modifications to the recipe as per your requirements.
-- Optionally, add your own modules to the `modules` directory or modify the existing ones with the format `number-module_name.yml` (Note: modules with lower numbers are added first to the image). If not required, remove the module syntax from the `recipe.yml` file.
+- Optionally, add your own modules to the `modules` directory and add them in the package-modules includes in `recipe.yml`.
