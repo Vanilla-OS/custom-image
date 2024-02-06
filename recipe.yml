@@ -26,13 +26,17 @@ modules:
   commands:
   - echo Example output
 
-- name: package-modules
+- name: example-modules
   type: includes
   includes:
     - modules/50-install-debs
-    - modules/80-set-image-abroot-config
 
 # Put your custom actions before this comment
+
+- name: set-image-name-abroot
+  type: includes
+  includes:
+    - modules/80-set-image-abroot-config
 
 - name: cleanup
   type: shell
