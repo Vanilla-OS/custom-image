@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       has_updates: ${{ steps.set_output.outputs.has_updates }}
-      base_image_type: ${{ steps.read_base_recipe.outputs.base_image_type }}
+      base_image: ${{ steps.read_base_recipe.outputs.base_image }}
     permissions:
       contents: write
     steps:
@@ -23,16 +23,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get install jq
+        run: sudo apt-get install -y jq skopeo
 
       - name: Read base image name from recipe
         id: read_base_recipe
         run: |
-          BASE_IMAGE="$(cat recipe.yml | grep "ghcr.io/vanilla-os" | awk -F ' ' '{print $2}')"
+          BASE_IMAGE="$(cat recipe.yml | grep "base: " | awk -F ' ' '{print $2}')"
           echo The base image is $BASE_IMAGE
-          BASE_IMAGE_TYPE="$(echo $BASE_IMAGE | awk -F '/' '{print $3}' | awk -F ':' '{print $1}')"
-          echo "base_image_type=$BASE_IMAGE_TYPE" >> "$GITHUB_OUTPUT"
-          echo "BASE_IMAGE_TYPE=$BASE_IMAGE_TYPE" >> "$GITHUB_ENV"
+          if [ -z $BASE_IMAGE ]; then exit 1; fi
+          echo "base_image=$BASE_IMAGE" >> "$GITHUB_OUTPUT"
+          echo "BASE_IMAGE=$BASE_IMAGE" >> "$GITHUB_ENV"
 
       - name: get last successful run
         if: ${{ github.ref_type == 'branch' }}
@@ -55,8 +55,7 @@ jobs:
         run: |
           touch digest.txt
           mv digest.txt last_digest.txt
-          curl https://differ.vanillaos.org/images/${{ env.BASE_IMAGE_TYPE }} > vanilla-image-info
-          jq -r '.image.releases[-1].digest' vanilla-image-info > digest.txt
+          skopeo inspect --raw docker://${{ env.BASE_IMAGE }} | sha256sum > digest.txt
           echo Old digest is: $(cat last_digest.txt)
           echo New digest is: $(cat digest.txt)
           echo "HAS_UPDATES=$(cmp -s digest.txt last_digest.txt; echo $?)" >> "$GITHUB_ENV"
@@ -105,7 +104,7 @@ jobs:
 
     - name: Set image info
       run: |
-        echo -n "vanilla-os/${{ needs.check_update.outputs.base_image_type }}" > ./includes.container/image-info/base-image-name
+        echo -n "${{ needs.check_update.outputs.base_image }}" > ./includes.container/image-info/base-image-name
         echo -n "${{ env.REPO_OWNER_LOWERCASE }}/${{ env.CUSTOM_IMAGE_NAME }}" > ./includes.container/image-info/image-name
 
     - name: Build the Docker image
