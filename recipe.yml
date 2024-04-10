@@ -1,67 +1,72 @@
-base: ghcr.io/vanilla-os/desktop:main
 name: Custom Vanilla Desktop
 id: vanilla-custom
-labels:
-  maintainer: self-maintained
-args:
-  DEBIAN_FRONTEND: noninteractive
+stages:
+- id: build
+  base: ghcr.io/vanilla-os/desktop:main
+  singlelayer: false
+  labels:
+    maintainer: self-maintained
+  args:
+    DEBIAN_FRONTEND: noninteractive
+  runs:
+  - echo 'APT::Install-Recommends "1";' > /etc/apt/apt.conf.d/01norecommends
 
-modules:
-- name: init-setup
-  type: shell
-  commands:
-  - lpkg --unlock
-  - apt-get update
-
-# Put your custom actions behind this comment
-
-- name: example-packages
-  type: apt
-  source:
-    packages:
-    - vim
-
-- name: example-commands
-  type: shell
-  commands:
-  - echo Example output
-
-- name: example-modules
-  type: includes
-  includes:
-    - modules/50-install-debs
-
-# Put your custom actions before this comment
-
-- name: set-image-name-abroot
-  type: includes
-  includes:
-    - modules/80-set-image-abroot-config
-
-- name: cleanup
-  type: shell
-  commands:
-  - apt-get autoremove -y
-  - apt-get clean
-  - lpkg --lock
-
-- name: fsguard
-  type: fsguard
-  CustomFsGuard: false
-  FsGuardLocation: "/usr/sbin/FsGuard"
-  GenerateKey: true
-  FilelistPaths: ["/usr/bin"]
   modules:
-    - name: remove-prev-fsguard
-      type: shell
-      commands:
-        - rm -rf /FsGuard 
-        - rm -f ./minisign.pub ./minisign.key 
-        - chmod +x /usr/sbin/init
+  - name: init-setup
+    type: shell
+    commands:
+    - lpkg --unlock
+    - apt-get update
 
-- name: cleanup2
-  type: shell
-  commands:
-    - rm -rf /tmp/*
-    - rm -rf /var/tmp/*
-    - rm -rf /sources
+  # Put your custom actions behind this comment
+
+  - name: example-packages
+    type: apt
+    source:
+      packages:
+      - vim
+
+  - name: example-commands
+    type: shell
+    commands:
+    - echo Example output
+
+  - name: example-modules
+    type: includes
+    includes:
+      - modules/50-install-debs.yml
+
+  # Put your custom actions before this comment
+
+  - name: set-image-name-abroot
+    type: includes
+    includes:
+      - modules/80-set-image-abroot-config.yml
+
+  - name: cleanup
+    type: shell
+    commands:
+    - apt-get autoremove -y
+    - apt-get clean
+    - lpkg --lock
+
+  - name: fsguard
+    type: fsguard
+    CustomFsGuard: false
+    FsGuardLocation: "/usr/sbin/FsGuard"
+    GenerateKey: true
+    FilelistPaths: ["/usr/bin"]
+    modules:
+      - name: remove-prev-fsguard
+        type: shell
+        commands:
+          - rm -rf /FsGuard 
+          - rm -f ./minisign.pub ./minisign.key 
+          - chmod +x /usr/sbin/init
+
+  - name: cleanup2
+    type: shell
+    commands:
+      - rm -rf /tmp/*
+      - rm -rf /var/tmp/*
+      - rm -rf /sources
