@@ -23,12 +23,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get install -y jq skopeo
+        run: sudo apt-get install -y jq skopeo libfyaml-utils
 
       - name: Read base image name from recipe
         id: read_base_recipe
         run: |
-          BASE_IMAGE="$(cat recipe.yml | grep "base: " | awk -F ' ' '{print $2}')"
+          BASE_IMAGE="$(fy-filter -f recipe.yml /stages/-1/base)"
           echo The base image is $BASE_IMAGE
           if [ -z $BASE_IMAGE ]; then exit 1; fi
           echo "base_image=$BASE_IMAGE" >> "$GITHUB_OUTPUT"
