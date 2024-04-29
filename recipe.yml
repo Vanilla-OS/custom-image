@@ -1,5 +1,5 @@
 name: Custom Vanilla Desktop
-id: vanilla-custom
+id: custom
 stages:
 - id: build
   base: ghcr.io/vanilla-os/desktop:main
