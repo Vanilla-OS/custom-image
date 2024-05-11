@@ -12,6 +12,7 @@ on:
 
 env:
   CUSTOM_IMAGE_NAME: custom
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 jobs:
   check_update:
@@ -22,7 +23,7 @@ jobs:
       base_image: ${{ steps.read_base_recipe.outputs.base_image }}
 
     permissions:
-      contents: write # Allow actions to create digest, etc.
+      contents: write # Allow actions to create a digest
 
     steps:
       - name: Checkout code
@@ -49,7 +50,7 @@ jobs:
           gh run list -b "${{ github.ref_name }}" -w "${{ github.workflow }}" -s "success" -L 1 --json databaseId > last_run.json
           echo "LAST_RUN_ID=$(jq -r '.[0].databaseId' last_run.json)" >> "$GITHUB_ENV"
 
-      - name: Download previous digest
+      - name: Download the previous digest
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
@@ -81,10 +82,10 @@ jobs:
             echo "has_updates=true" >> "$GITHUB_OUTPUT"
           elif [ ${{ env.HAS_UPDATES }} == 1 ]
           then
-            echo base image was updated since last build
+            echo base image was updated since the last build
             echo "has_updates=true" >> "$GITHUB_OUTPUT"
           else
-            echo no updates to the base image since last build
+            echo no updates to the base image since the last build
             echo "has_updates=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -155,3 +156,5 @@ jobs:
         labels: ${{ steps.docker_meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        platforms: linux/amd64
+        provenance: false
