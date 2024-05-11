@@ -103,6 +103,11 @@ jobs:
       with:
         recipe: 'recipe.yml'
         plugins: 'Vanilla-OS/vib-fsguard:v1.4'
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Containerfile
+        path: Containerfile
 
     - name: Generate image name
       run: |
