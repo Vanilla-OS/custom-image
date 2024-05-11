@@ -3,8 +3,11 @@ name: Vib Build
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - '*'
   schedule:
     - cron: '21 3 * * *'
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -13,11 +16,14 @@ env:
 jobs:
   check_update:
     runs-on: ubuntu-latest
+
     outputs:
       has_updates: ${{ steps.set_output.outputs.has_updates }}
       base_image: ${{ steps.read_base_recipe.outputs.base_image }}
+
     permissions:
-      contents: write
+      contents: write # Allow actions to create digest, etc.
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,7 +40,7 @@ jobs:
           echo "base_image=$BASE_IMAGE" >> "$GITHUB_OUTPUT"
           echo "BASE_IMAGE=$BASE_IMAGE" >> "$GITHUB_ENV"
 
-      - name: get last successful run
+      - name: Get last successful run
         if: ${{ github.ref_type == 'branch' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,8 +92,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: check_update
     if: ${{ needs.check_update.outputs.has_updates == 'true' }}
+
     permissions:
-      packages: write
+      packages: write # Allow pushing images to GHCR.
+
     steps:
     - uses: actions/checkout@v4
 
@@ -100,17 +108,45 @@ jobs:
       run: |
         REPO_OWNER_LOWERCASE="$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')"
         echo "REPO_OWNER_LOWERCASE=$REPO_OWNER_LOWERCASE">> "$GITHUB_ENV"
-        echo "IMAGE_TAG=ghcr.io/$REPO_OWNER_LOWERCASE/${{ env.CUSTOM_IMAGE_NAME }}:main">> "$GITHUB_ENV"
+        echo "IMAGE_URL=ghcr.io/$REPO_OWNER_LOWERCASE/${{ env.CUSTOM_IMAGE_NAME }}">> "$GITHUB_ENV"
 
     - name: Set image info
       run: |
         echo -n "${{ needs.check_update.outputs.base_image }}" > ./includes.container/image-info/base-image-name
         echo -n "${{ env.REPO_OWNER_LOWERCASE }}/${{ env.CUSTOM_IMAGE_NAME }}" > ./includes.container/image-info/image-name
 
-    - name: Build the Docker image
-      run: docker image build -f Containerfile --tag "${{ env.IMAGE_TAG }}" .
+    - name: Docker meta
+      id: docker_meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          ${{ env. IMAGE_URL }}
+        tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{raw}}
+          type=semver,pattern=v{{major}}
+          type=ref,event=branch
 
-    - name: Push To GHCR
-      run: |
-        docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }}
-        docker image push "${{ env.IMAGE_TAG }}"
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub Package Registry
+      uses: docker/login-action@v3
+      if: ${{ github.event_name == 'push' }}
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push the Docker image
+      id: push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: Containerfile
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.docker_meta.outputs.tags }}
+        labels: ${{ steps.docker_meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
