@@ -1,13 +1,15 @@
-name: Custom Vanilla Desktop
-id: custom
+name: Custom Vanilla Desktop # Replace this name with your image name
+id: custom # Replace this ID with your image ID
 stages:
 - id: build
   base: ghcr.io/vanilla-os/desktop:main
   singlelayer: false
   labels:
-    maintainer: self-maintained
+    maintainer: self-maintained # Optionally: Replace this with your name
   args:
-    DEBIAN_FRONTEND: noninteractive
+    DEBIAN_FRONTEND: noninteractive # Set the image environment as non-interactive
+  
+  # Commands to run first before building the modules
   runs:
   - echo 'APT::Install-Recommends "1";' > /etc/apt/apt.conf.d/01norecommends
 
@@ -20,21 +22,22 @@ stages:
 
   # Put your custom actions behind this comment
 
-  - name: example-packages
+  - name: example-packages # Sample module using the built-in Apt module to install packages
     type: apt
     source:
       packages:
       - vim
 
-  - name: example-commands
+  - name: example-commands # Sample module demonstrating the Shell module with custom commands
     type: shell
     commands:
     - echo Example output
 
-  - name: example-modules
+  - name: example-modules # Sample module demonstatrating importing local and remote modules
     type: includes
     includes:
-      - modules/50-install-debs.yml
+      - modules/50-install-debs.yml # This is a local module present in this repository
+      - gh:vanilla-os/dev-image:main:modules/00-basics.yml # This is a remote module in the format: `gh:your-name/your-repo:branch:modules/file.yml`
 
   # Put your custom actions before this comment
 
