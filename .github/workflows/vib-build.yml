@@ -95,7 +95,9 @@ jobs:
     if: ${{ needs.check_update.outputs.has_updates == 'true' }}
 
     permissions:
-      packages: write # Allow pushing images to GHCR.
+      packages: write # Allow pushing images to GHCR
+      attestations: write # To create and write attestations
+      id-token: write # Additional permissions for persistence of the attestations
 
     steps:
     - uses: actions/checkout@v4
@@ -158,3 +160,12 @@ jobs:
         cache-to: type=gha,mode=max
         platforms: linux/amd64
         provenance: false
+
+    - name: Attest pushed image
+      uses: actions/attest-build-provenance@v1
+      id: attest
+      if: ${{ github.event_name != 'pull_request' }}
+      with:
+        subject-name: ${{ env.IMAGE_URL }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: false

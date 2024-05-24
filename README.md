@@ -24,9 +24,9 @@ This template repository is a starting point for creating custom [Vib images](ht
 
 If your image is successfully built, you can then point ABRoot to your custom image to use it.
 
-- Edit `/etc/abroot/abroot.json` with `host-shell pkexec nano /etc/abroot/abroot.json`.
-- Change the "name" entry from something like `vanilla-os/desktop` to `your-github-name/your-image-name` (for example `taukakao/custom`).
-- Run `abroot upgrade` to switch to your custom image.
+- Edit the `/etc/abroot/abroot.json` file with the command: `host-shell pkexec nano /etc/abroot/abroot.json`.
+- Change the "name" entry from something like `vanilla-os/desktop` to `your-github-name/your-image-name` (for example `taukakao/custom`).  [**Note**: All characters must be in lowercase.]
+- Now, Run `abroot upgrade` to switch to your custom image.
 
 ## Explore
 
