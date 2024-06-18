@@ -1,3 +1,4 @@
 # Ignore Vib generated directories
 /downloads/
 /sources/
+Containerfile

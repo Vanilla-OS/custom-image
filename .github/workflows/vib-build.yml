@@ -97,16 +97,16 @@ jobs:
     permissions:
       packages: write # Allow pushing images to GHCR
       attestations: write # To create and write attestations
-      id-token: write # Additional permissions for persistence of the attestations
+      id-token: write # Additional permissions for the persistence of the attestations
 
     steps:
     - uses: actions/checkout@v4
 
-    - uses: vanilla-os/vib-gh-action@v0.7.0
+    - uses: vanilla-os/vib-gh-action@v0.7.2
       with:
         recipe: 'recipe.yml'
-        plugins: 'Vanilla-OS/vib-fsguard:v1.4'
-    
+        plugins: 'Vanilla-OS/vib-fsguard:v1.5.1'
+
     - uses: actions/upload-artifact@v4
       with:
         name: Containerfile
