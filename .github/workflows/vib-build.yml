@@ -6,7 +6,7 @@ on:
     tags:
       - '*'
   schedule:
-    - cron: '21 3 * * *'
+    - cron: '21 */6 * * *'
   pull_request:
   workflow_dispatch:
 
