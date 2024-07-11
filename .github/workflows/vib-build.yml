@@ -17,11 +17,25 @@ env:
 jobs:
   verify_image:
     runs-on: ubuntu-latest
-
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: sudo apt-get install -y libfyaml-utils
+
+    - name: Read base image name from recipe
+      id: read_base_recipe
+      run: |
+        BASE_IMAGE="$(fy-filter -f recipe.yml /stages/-1/base)"
+        echo The base image is $BASE_IMAGE
+        if [ -z $BASE_IMAGE ]; then exit 1; fi
+        echo "base_image=$BASE_IMAGE" >> "$GITHUB_OUTPUT"
+        echo "BASE_IMAGE=$BASE_IMAGE" >> "$GITHUB_ENV"
+
     - name: Verify Base Image Integrity
-      run:
-        gh attestation verify oci://ghcr.io/vanilla-os/desktop:main --owner Vanilla-OS
+      run: |
+        gh attestation verify oci://ghcr.io/${{ env.BASE_IMAGE }} --owner Vanilla-OS
       env:
         GH_TOKEN: ${{ github.token }}
 
@@ -112,10 +126,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: vanilla-os/vib-gh-action@v0.7.2
+    - uses: vanilla-os/vib-gh-action@v0.7.4
       with:
         recipe: 'recipe.yml'
-        plugins: 'Vanilla-OS/vib-fsguard:v1.5.1'
+        plugins: 'Vanilla-OS/vib-fsguard:v1.5.3'
 
     - uses: actions/upload-artifact@v4
       with:
