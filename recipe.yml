@@ -21,7 +21,7 @@ stages:
     - lpkg --unlock
     - apt-get update
 
-  # Put your custom actions behind this comment
+  # Put your custom actions below this comment
 
   - name: example-packages # Sample module using the built-in Apt module to install packages
     type: apt
@@ -41,7 +41,7 @@ stages:
       - gh:vanilla-os/dev-image:main:modules/00-basics.yml # Sample GitHub remote module in the format: `gh:your-name/your-repo:branch:modules/file.yml`
       - https://raw.githubusercontent.com/Vanilla-OS/dev-image/main/modules/05-go.yml # Sample full URL remote module
 
-  # Put your custom actions before this comment
+  # Put your custom actions above this comment
 
   - name: set-image-name-abroot
     type: includes
