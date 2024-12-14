@@ -13,7 +13,7 @@ This template repository is a starting point for creating custom [Vib images](ht
 - Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 14.
 - Open the `recipe.yml` file and replace the image name and ID with your image name and ID in lines 1 and 2.
 - Now, perform your additions and modifications to the recipe as per your requirements.
-- If you just want to install `.deb` files, you can just put them in `includes.container/deb-pkgs`
+- If you just want to install `.deb` files, you can just put them in `includes.container/deb-pkgs` (if you choose this option, make sure to keep the .deb file up to date, it will not be upgraded automatically)
 - Optionally, add your modules to the `modules` directory and add them to the package-modules `includes` in `recipe.yml`.
 - You can check the Actions tab in GitHub to see the build progress of your image.
 
