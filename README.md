@@ -10,7 +10,7 @@ This template repository is a starting point for creating custom [Vib images](ht
 - First, click on the <kbd>Use this template</kbd> button in the top right corner, then from the drop-down menu select <kbd>Create a new repository</kbd>. This would create a new repository with the same files and directories as this repository.
 - Go to **Settings → Actions → General** and ensure "_Allow all actions and reusable workflows_" are enabled.
 - Now, clone the repository to your local machine and let's start customizing your image. You can also use the GitHub online editor if you prefer.
-- Open the `vib-build.yml` workflow file and replace the custom image name with an image name of your choosing in line 14.
+- Open the `vib-build.yml` workflow file in the `.github/workflows` folder and replace the custom image name with an image name of your choosing in line 14.
 - Open the `recipe.yml` file and replace the image name and ID with your image name and ID in lines 1 and 2.
 - Now, perform your additions and modifications to the recipe as per your requirements.
 - If you just want to install `.deb` files, you can just put them in `includes.container/deb-pkgs` (if you choose this option, make sure to keep the .deb file up to date, it will not be upgraded automatically)
