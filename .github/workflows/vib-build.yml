@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  CUSTOM_IMAGE_NAME: custom
+  CUSTOM_IMAGE_NAME: vanilla-stalk
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 jobs:
