@@ -1,14 +1,17 @@
 name: Custom Vanilla Desktop # Replace this name with your image name
 id: custom # Replace this ID with your image ID
+vibversion: 1.0.7
+
 stages:
 - id: build
   base: ghcr.io/vanilla-os/desktop:main # Optionally, Replace this image URL with a different one i.e. nvidia:main, etc
+  addincludes: true
   singlelayer: false
   labels:
     maintainer: self-maintained # Optionally, Replace this with your name
   args:
     DEBIAN_FRONTEND: noninteractive # Set the image environment as non-interactive
-  
+
   # Commands to run first before building the modules
   runs:
     commands:
@@ -25,9 +28,9 @@ stages:
 
   - name: example-packages # Sample module using the built-in Apt module to install packages
     type: apt
-    source:
-      packages:
-      - vim
+    sources:
+      - packages:
+        - vim
 
   - name: example-commands # Sample module demonstrating the Shell module with custom commands
     type: shell
@@ -74,4 +77,3 @@ stages:
     commands:
       - rm -rf /tmp/*
       - rm -rf /var/tmp/*
-      - rm -rf /sources
