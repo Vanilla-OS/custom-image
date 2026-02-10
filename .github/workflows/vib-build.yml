@@ -113,7 +113,7 @@ jobs:
     - uses: vanilla-os/vib-gh-action@v1.0.7
       with:
         recipe: 'recipe.yml'
-        plugins: 'Vanilla-OS/vib-fsguard:v1.5.3'
+        plugins: 'Vanilla-OS/vib-fsguard:v1.6.1'
 
     - uses: actions/upload-artifact@v6
       with:
