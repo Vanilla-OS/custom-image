@@ -4,7 +4,7 @@ vibversion: 1.0.7
 
 stages:
 - id: build
-  base: ghcr.io/vanilla-os/desktop:main # Optionally, Replace this image URL with a different one i.e. nvidia:main, etc
+  base: ghcr.io/vanilla-os/gnome:latest # Optionally, Replace this image URL with a different one i.e. gnome-nvidia:latest, etc
   addincludes: true
   singlelayer: false
   labels:
