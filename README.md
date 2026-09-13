@@ -40,3 +40,21 @@ Now, that you are aware of the basics, let's explore the files and directories p
 - `includes.container`: The files included in this directory are added by default to your image to the specified location (**Note**: It also contains ABRoot's configuration file).
 - `modules`: This directory contains the modules that are used to customize the image. You can add your modules to this directory.
 - `recipe.yml`: This file contains the recipe for the image. It specifies the base image, modules and other fields to be present in the custom image.
+
+## Use of Generative AI
+
+Maintainers may use generative AI tools as assistants while working on custom-image. Non-trivial assisted commits disclose the tool, model, and scope of the work.
+
+AI tools may assist with code comments, documentation, repetitive code, and issue triage. Maintainers make project decisions and review every assisted change before it is merged.
+
+Use these trailers for non-trivial assisted commits:
+
+```plain
+Assisted-by: <tool>:<model-version>
+AI-Scope: <what the tool generated and the prompt or a short prompt summary>
+```
+
+Single-line completions, renames, and formatting changes do not need trailers.
+
+Coding agents must also follow [AGENTS.md](AGENTS.md) before changing files,
+creating commits, or opening pull requests.
