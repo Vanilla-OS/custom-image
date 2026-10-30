@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         run: sudo apt-get install -y jq skopeo libfyaml-utils
@@ -108,11 +108,11 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - uses: vanilla-os/vib-gh-action@v1.0.7
+    - uses: vanilla-os/vib-gh-action@v1.1.0
       with:
         recipe: 'recipe.yml'
 
-    - uses: actions/upload-artifact@v6
+    - uses: actions/upload-artifact@v7
       with:
         name: Containerfile
         path: Containerfile
@@ -131,15 +131,15 @@ jobs:
 
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
       with:
         images: ${{ env.IMAGE_URL }}
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
 
     - name: Login to GitHub Package Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       if: ${{ github.event_name != 'pull_request' }}
       with:
         registry: ghcr.io
@@ -148,7 +148,7 @@ jobs:
 
     - name: Build and push by digest
       id: build
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
         file: Containerfile
@@ -168,7 +168,7 @@ jobs:
         touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
     - name: Upload digest
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ github.event_name != 'pull_request' }}
       with:
         name: digests-${{ matrix.arch }}
@@ -193,7 +193,7 @@ jobs:
         echo "IMAGE_URL=ghcr.io/$REPO_OWNER_LOWERCASE/${{ env.CUSTOM_IMAGE_NAME }}">> "$GITHUB_ENV"
 
     - name: Download digests
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         path: ${{ runner.temp }}/digests
         pattern: digests-*
@@ -201,7 +201,7 @@ jobs:
 
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
       with:
         images: ${{ env.IMAGE_URL }}
         tags: |
@@ -212,10 +212,10 @@ jobs:
           type=ref,event=branch
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
 
     - name: Login to GitHub Package Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}

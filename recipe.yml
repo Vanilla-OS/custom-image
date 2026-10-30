@@ -1,6 +1,6 @@
 name: Custom Vanilla Desktop # Replace this name with your image name
 id: custom # Replace this ID with your image ID
-vibversion: 1.0.7
+vibversion: 1.1.0
 
 stages:
 - id: build
@@ -11,6 +11,9 @@ stages:
     maintainer: self-maintained # Optionally, Replace this with your name
   args:
     DEBIAN_FRONTEND: noninteractive # Set the image environment as non-interactive
+  cleanup:
+    - /tmp/*
+    - /var/tmp/*
 
   # Commands to run first before building the modules
   runs:
@@ -57,9 +60,3 @@ stages:
     - apt-get autoremove -y
     - apt-get clean
     - lpkg --lock
-
-  - name: cleanup2
-    type: shell
-    commands:
-      - rm -rf /tmp/*
-      - rm -rf /var/tmp/*
